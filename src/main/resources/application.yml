@@ -1,0 +1,26 @@
+micronaut:
+  application:
+    name: storage-service
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+  server:
+    cors:
+      enabled: true
+    port: ${SERVER_PORT:8080}
+    max-request-size: ${STORAGE_MAX_SIZE:2048MB}
+    multipart:
+      enabled: true
+      max-file-size: ${STORAGE_MAX_SIZE:2048MB}
+      disk: true
+      location: ./tmp
+  object-storage:
+    local:
+      default:
+        enabled: true
+        path: ${STORAGE_FOLDER_PATH:/home/app/storage}

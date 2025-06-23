@@ -1,0 +1,4 @@
+
+
+rootProject.name="storage-service"
+

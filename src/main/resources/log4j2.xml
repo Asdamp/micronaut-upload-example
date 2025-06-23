@@ -1,0 +1,71 @@
+<Configuration status="WARN" monitorInterval="30">
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="LOG_PATTERN">%highlight{%d{dd-MM-yyyy HH:mm:ss.SSS} %-5level %logger{36}.%M() @%L - %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=default, DEBUG=green bold, TRACE=blue}</Property>
+        <Property name="APP_LOG_ROOT">log</Property>
+        <Property name="APP_NAME">device-dev</Property>
+    </Properties>
+    <Appenders>
+
+
+
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout
+                    disableAnsi="false"
+                    pattern="${LOG_PATTERN}"
+            />
+        </Console>
+
+        <!-- File Appenders on need basis -->
+        <RollingFile name="fileLog" fileName="${APP_LOG_ROOT}/${APP_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/${APP_LOG_ROOT}-%d{MM-dd-yy}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${APP_LOG_ROOT}" maxDepth="10">
+                    <!-- Delete all files older than 30 days -->
+                    <IfLastModified age="2d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+    </Appenders>
+    <Loggers>
+        <Logger name="com.test.storage" additivity="false" level="${env:LOG_LEVEL:-TRACE}">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="io.micronaut" additivity="false" level="${env:LOG_LEVEL_MICRONAUT:-INFO}">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.hibernate.orm.jdbc.bind" additivity="false" level="${env:LOG_LEVEL_HIBERNATE:-WARN}">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.hibernate.SQL" additivity="false" level="${env:LOG_LEVEL_HIBERNATE:-WARN}">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.hibernate.engine" additivity="false" level="${env:LOG_LEVEL_HIBERNATE:-WARN}">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="com.azure.core.amqp" additivity="false" level="warn">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="com.azure.messaging" additivity="false" level="warn">
+            <AppenderRef ref="fileLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+
+        </Root>
+    </Loggers>
+</Configuration>
